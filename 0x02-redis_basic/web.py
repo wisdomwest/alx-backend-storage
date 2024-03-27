@@ -17,13 +17,13 @@ def count_requests(method: Callable) -> Callable:
     def wrapper(url) -> str:
         '''wrapper function'''
         r.incr(f'count:{url}')
-        r.expire(f'count:{url}', 10)
         cached = r.get(f'cached:{url}')
         if cached:
             return cached.decode('utf-8')
-        html = method(url)
-        r.setex(f'cached:{url}', 10, html)
-        return html
+        cached = method(url)
+        r.set(f'count:{url}', 0)
+        r.setex(f'cached:{url}', 10, cached)
+        return cached
     return wrapper
 
 
