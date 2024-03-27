@@ -18,6 +18,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     '''Decorator to store the history of inputs and outputs'''
     key = method.__qualname__
@@ -31,6 +32,7 @@ def call_history(method: Callable) -> Callable:
         return data
     return wrapper
 
+
 def replay(fn: Callable) -> None:
     '''implement a replay function to display the history
     of calls of a particular function'''
@@ -41,7 +43,7 @@ def replay(fn: Callable) -> None:
     count = 0
 
     print(f"{name} was called {count} times:")
-    
+
     fn_inputs = self._redis.lrange(input, 0, -1)
     fn_outputs = self._redis.lrange(output, 0, -1)
 
@@ -56,7 +58,7 @@ class Cache:
         '''Constructor'''
         self._redis = redis.Redis()
         self._redis.flushdb()
-    
+
     @count_calls
     @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
